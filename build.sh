@@ -26,6 +26,9 @@ for OS in "linux" "windows"; do
     for ARCH in "amd64" "arm64" "386"; do
         echo "Building ${OS}/${ARCH} with version: ${GITVERSION}, revision: ${GITREVISION}, buildUser: ${GITHUB_ACTOR}"
         if [[ $OS == "windows" ]]; then
+            if [[ $ARCH == 'arm64' ]]; then
+              continue
+            fi
             GO111MODULE=on CGO_ENABLED=0 GOOS=${OS} GOARCH=${ARCH} go build -ldflags "${LDFLAGS}" -tags 'netgo static_build' -a -o ".build/${OS}-${ARCH}/beat-exporter.exe"
         else
             GO111MODULE=on CGO_ENABLED=0 GOOS=${OS} GOARCH=${ARCH} go build -ldflags "${LDFLAGS}" -tags 'netgo static_build' -a -o ".build/${OS}-${ARCH}/beat-exporter"
